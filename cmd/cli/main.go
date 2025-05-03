@@ -115,14 +115,14 @@ func generateCsv(
 
 		return
 	default:
-		if len(*records) == 0 {
-			logger.Warn("No results found")
+		if records == nil || *records == nil {
+			logger.Error("records are nil")
 
 			return
 		}
 
-		if *records == nil {
-			logger.Error("records are nil")
+		if len(*records) == 0 {
+			logger.Warn("No results found")
 
 			return
 		}
