@@ -1,0 +1,11 @@
+quiet: False
+disable-version-string: False
+with-expecter: True
+dir: "./{{.PackageName}}"
+mockname: "Mock{{.InterfaceName}}"
+filename: "mock_{{.InterfaceName}}.go"
+packages:
+  github.com/erainogo/html-analyzer/internal/core/adapters:
+    config:
+    interfaces:
+      AnalyzeService:
