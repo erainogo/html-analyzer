@@ -9,3 +9,4 @@ packages:
     config:
     interfaces:
       AnalyzeService:
+      CliServer:

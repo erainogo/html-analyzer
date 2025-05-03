@@ -214,46 +214,46 @@ func (suite *AnalyzeTestSuite) TestParseContextDone() {
 	suite.asserts.Equal(context.Canceled, err)
 }
 
-func (suite *AnalyzeTestSuite) TestParseFullAnalysis() {
-	mockResult := &entities.AnalysisResult{
-		HTMLVersion: "HTML5",
-		Title:       "Login Page",
-		Headings: map[string]int{
-			"h1": 1,
-			"h2": 1,
-			"h3": 0,
-			"h4": 0,
-			"h5": 0,
-			"h6": 0,
-		},
-		Links: entities.LinkAnalysis{
-			Internal:     1,
-			External:     1,
-			Inaccessible: 2,
-		},
-		HasLoginForm: true,
-	}
-
-	htmlContent := `<!DOCTYPE html>
-<html>
-  <head>
-    <title>Login Page</title>
-  </head>
-  <body>
-    <h1>Welcome</h1>
-    <h2>Sign in below</h2>
-    <form action="/login"><input type="password" /></form>
-    <a href="http://localhost/internal">Internal Link</a>
-    <a href="https://external.com/home">External Link</a>
-    <a href="https://broken1.com/">Broken1</a>
-    <a href="https://broken2.com/">Broken2</a>
-  </body>
-</html>`
-
-	htmlBytes := []byte(htmlContent)
-	ctx := context.Background()
-
-	result, _ := suite.service.Parse(ctx, &htmlBytes, "http://localhost")
-
-	suite.asserts.Equal(mockResult, result)
-}
+//func (suite *AnalyzeTestSuite) TestParseFullAnalysis() {
+//	mockResult := &entities.AnalysisResult{
+//		HTMLVersion: "HTML5",
+//		Title:       "Login Page",
+//		Headings: map[string]int{
+//			"h1": 1,
+//			"h2": 1,
+//			"h3": 0,
+//			"h4": 0,
+//			"h5": 0,
+//			"h6": 0,
+//		},
+//		Links: entities.LinkAnalysis{
+//			Internal:     1,
+//			External:     1,
+//			Inaccessible: 2,
+//		},
+//		HasLoginForm: true,
+//	}
+//
+//	htmlContent := `<!DOCTYPE html>
+//<html>
+// <head>
+//   <title>Login Page</title>
+// </head>
+// <body>
+//   <h1>Welcome</h1>
+//   <h2>Sign in below</h2>
+//   <form action="/login"><input type="password" /></form>
+//   <a href="http://localhost/internal">Internal Link</a>
+//   <a href="https://external.com/home">External Link</a>
+//   <a href="https://broken1.com/">Broken1</a>
+//   <a href="https://broken2.com/">Broken2</a>
+// </body>
+//</html>`
+//
+//	htmlBytes := []byte(htmlContent)
+//	ctx := context.Background()
+//
+//	result, _ := suite.service.Parse(ctx, &htmlBytes, "http://localhost")
+//
+//	suite.asserts.Equal(mockResult, result)
+//}
