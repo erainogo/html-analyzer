@@ -117,6 +117,14 @@ func generateCsv(
 	default:
 		if len(*records) == 0 {
 			logger.Warn("No results found")
+
+			return
+		}
+
+		if *records == nil {
+			logger.Error("records are nil")
+
+			return
 		}
 
 		rc := *records
