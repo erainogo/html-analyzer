@@ -97,7 +97,7 @@ func main() {
 		logger.Fatalf("Failed to write header: %v", err)
 	}
 
-	generateCsv(ctx, logger, records, writer)
+	generateCsv(ctx, logger, &records, writer)
 
 	logger.Infof("Finished analyzing. Exiting.")
 	logger.Infof("Output File Generated : %s", outputPath)
@@ -106,7 +106,7 @@ func main() {
 func generateCsv(
 	ctx context.Context,
 	logger *zap.SugaredLogger,
-	records [][]string,
+	records *[][]string,
 	writer *csv.Writer,
 ) {
 	select {
@@ -115,6 +115,12 @@ func generateCsv(
 
 		return
 	default:
+		if len(*records) == 0 {
+			logger.Warn("No results found")
+		}
+
+		rc := *records
+
 		service := services.NewAnalyzeService(
 			ctx, services.WithLogger(logger))
 
@@ -122,8 +128,8 @@ func generateCsv(
 			ctx, service, handlers.CliWithLogger(logger))
 
 		// make buffered channels for the count of the records.
-		jobs := make(chan urlJob, len(records))
-		results := make(chan urlResult, len(records))
+		jobs := make(chan urlJob, len(rc))
+		results := make(chan urlResult, len(rc))
 
 		var wg sync.WaitGroup
 
@@ -163,7 +169,7 @@ func generateCsv(
 		}
 
 		// Send jobs
-		for i, record := range records {
+		for i, record := range rc {
 			if len(record) == 0 {
 				continue
 			}
@@ -182,7 +188,7 @@ func generateCsv(
 		for res := range results {
 			if res.Err != nil {
 				logger.Errorw("Error analyzing URL", "url",
-					records[res.Index][0], "error", res.Err)
+					rc[res.Index][0], "error", res.Err)
 
 				continue
 			}
@@ -190,7 +196,7 @@ func generateCsv(
 			if res.Row != nil {
 				if err := writer.Write(res.Row); err != nil {
 					logger.Errorw("Failed to write CSV row", "url",
-						records[res.Index][0], "error", err)
+						rc[res.Index][0], "error", err)
 				}
 			}
 		}
