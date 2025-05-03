@@ -3,9 +3,10 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"go.uber.org/zap"
 	"io"
 	"net/http"
+
+	"go.uber.org/zap"
 
 	"github.com/erainogo/html-analyzer/internal/core/adapters"
 	"github.com/erainogo/html-analyzer/pkg/entities"

@@ -3,10 +3,12 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"github.com/erainogo/html-analyzer/internal/core/adapters"
-	"go.uber.org/zap"
 	"io"
 	"net/http"
+
+	"go.uber.org/zap"
+
+	"github.com/erainogo/html-analyzer/internal/core/adapters"
 )
 
 type CliServer struct {

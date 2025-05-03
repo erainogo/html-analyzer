@@ -1,9 +1,10 @@
 package config
 
 import (
-	flag "github.com/spf13/pflag"
 	"os"
 	"strconv"
+
+	flag "github.com/spf13/pflag"
 )
 
 const (

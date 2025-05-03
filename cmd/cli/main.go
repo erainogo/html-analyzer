@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/csv"
 	"fmt"
-	"github.com/erainogo/html-analyzer/internal/app/services"
-	"github.com/erainogo/html-analyzer/internal/handlers"
 	"os"
 	"os/signal"
 	"sync"
@@ -13,7 +11,9 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/erainogo/html-analyzer/internal/app/services"
 	"github.com/erainogo/html-analyzer/internal/config"
+	"github.com/erainogo/html-analyzer/internal/handlers"
 	"github.com/erainogo/html-analyzer/pkg/constants"
 )
 

@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"context"
+
 	"github.com/erainogo/html-analyzer/pkg/entities"
 )
 

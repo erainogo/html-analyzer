@@ -1,0 +1,24 @@
+run:
+  timeout: 2m
+  exclude-files:
+    - ".*_test.go"
+    - ".*mock_.*.go"
+
+linters:
+  disable:
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - gosimple
+    - unused
+    - ineffassign
+    - typecheck
+    - gofmt
+    - goimports
+
+issues:
+  max-issues-per-linter: 50
+  max-same-issues: 3
+  exclude-dirs:
+    - mocks

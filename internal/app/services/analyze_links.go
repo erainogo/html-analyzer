@@ -2,11 +2,12 @@ package services
 
 import (
 	"context"
-	"go.uber.org/zap"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
+
+	"go.uber.org/zap"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/erainogo/html-analyzer/pkg/constants"

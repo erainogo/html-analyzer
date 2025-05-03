@@ -2,8 +2,9 @@ package services
 
 import (
 	"bytes"
-	"golang.org/x/net/html"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 func detectHTMLVersion(htmlBytes *[]byte) string {
