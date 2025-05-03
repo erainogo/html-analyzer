@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/erainogo/html-analyzer/internal/core/adapters"
+	"github.com/erainogo/html-analyzer/pkg/constants"
 )
 
 type CliServer struct {
@@ -71,12 +72,12 @@ func (h *CliServer) Handler(ctx context.Context, url string) (*[]string, error) 
 		result.HTMLVersion,
 		result.Title,
 
-		fmt.Sprint(result.Headings["h1"]),
-		fmt.Sprint(result.Headings["h2"]),
-		fmt.Sprint(result.Headings["h3"]),
-		fmt.Sprint(result.Headings["h4"]),
-		fmt.Sprint(result.Headings["h5"]),
-		fmt.Sprint(result.Headings["h6"]),
+		fmt.Sprint(result.Headings[constants.H1]),
+		fmt.Sprint(result.Headings[constants.H2]),
+		fmt.Sprint(result.Headings[constants.H3]),
+		fmt.Sprint(result.Headings[constants.H4]),
+		fmt.Sprint(result.Headings[constants.H5]),
+		fmt.Sprint(result.Headings[constants.H6]),
 
 		fmt.Sprint(rune(result.Links.Internal)),
 		fmt.Sprint(rune(result.Links.External)),

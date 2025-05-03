@@ -4,7 +4,6 @@ go 1.24.1
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
-	github.com/jarcoal/httpmock v1.4.0
 	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/zap v1.27.0

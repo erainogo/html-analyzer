@@ -48,7 +48,7 @@ func (u AnalyzeService) Parse(ctx context.Context, htmlBytes *[]byte, url string
 
 		return nil, ctx.Err()
 	default:
-		if htmlBytes == nil {
+		if htmlBytes == nil || *htmlBytes == nil {
 			return nil, errors.New("html bytes nil")
 		}
 		// detect HTML version from raw HTML
