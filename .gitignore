@@ -1,0 +1,5 @@
+/build/
+test_coverage/
+coverage.txt
+.DS_Store
+.idea/

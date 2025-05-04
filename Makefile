@@ -8,13 +8,13 @@ lint:
 	golangci-lint run -c .golangci.yml --sort-results
 
 test:
-	GO111MODULE=on GOPRIVATE="github.com" go test ./... -tags musl -coverprofile=coverage.txt -covermode count
+	GO111MODULE=on go test ./... -tags musl -coverprofile=coverage.txt -covermode count
 
 web-build:
-	GOOS=linux GOARCH=amd64 GO111MODULE=on GOPRIVATE="github.com" go build -o build/web-${BIN} ./cmd/server
+	GOOS=linux GOARCH=amd64 GO111MODULE=on go build -o build/web-${BIN} ./cmd/server
 
 cli-build:
-	GOOS=linux GOARCH=amd64 GO111MODULE=on GOPRIVATE="github.com" go build -o build/cli-${BIN} ./cmd/cli
+	GOOS=linux GOARCH=amd64 GO111MODULE=on go build -o build/cli-${BIN} ./cmd/cli
 
 build-mocks:
 	cd mocks/ && rm -rf -- */ && mockery --all
