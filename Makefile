@@ -1,8 +1,8 @@
 BIN?=html-analyzer
-REGISTRY?=localhost
+REGISTRY?=eranga567
 TAG?=latest
-GIT_SSH_KEY?=~/.ssh/id_rsa
-PROJECT_ROOT=$(shell pwd)
+WEB_IMAGE_NAME=$(REGISTRY)/$(BIN):$(TAG)-web
+CLI_IMAGE_NAME=$(REGISTRY)/$(BIN):$(TAG)-cli
 
 lint:
 	golangci-lint run -c .golangci.yml --sort-results
@@ -10,18 +10,24 @@ lint:
 test:
 	GO111MODULE=on GOPRIVATE="github.com" go test ./... -tags musl -coverprofile=coverage.txt -covermode count
 
-test-dynamic:
-	GO111MODULE=on GOPRIVATE="github.com" go test ./... -tags=dynamic,musl --cover
+web-build:
+	GOOS=linux GOARCH=amd64 GO111MODULE=on GOPRIVATE="github.com" go build -o build/web-${BIN} ./cmd/server
 
-build:
-	GO111MODULE=on GOPRIVATE="github.com" go build -o build/${BIN}
+cli-build:
+	GOOS=linux GOARCH=amd64 GO111MODULE=on GOPRIVATE="github.com" go build -o build/cli-${BIN} ./cmd/cli
 
 build-mocks:
 	cd mocks/ && rm -rf -- */ && mockery --all
 
-run: build
-	./build/${BIN}
-
 clean:
 	go clean
 	rm -rf build
+
+docker-web-build: web-build
+	docker build -f web.Dockerfile -t $(IMAGE_NAME)-web .
+
+docker-cli-build: cli-build
+	docker build -f cli.Dockerfile -t $(IMAGE_NAME)-cli .
+
+docker-web-push:
+	docker push $(WEB_IMAGE_NAME)
