@@ -19,6 +19,7 @@ type Configuration struct {
 	BootUpWaitTime *int
 	WriteTimeOut   *int
 	ReadTimeOut    *int
+	FEURL          *string
 }
 
 var (
@@ -48,6 +49,12 @@ var (
 		"http-write-timeout",
 		WriteTimeOut,
 		"write time out")
+
+	feUrl = flag.String(
+		"fe-url",
+		"http://localhost:5173",
+		"fe url",
+	)
 )
 
 func updateStringEnvVariable(defValue *string, key string) *string {
@@ -81,6 +88,7 @@ func init() {
 	httpPort = updateStringEnvVariable(httpPort, "HTTP_PORT")
 	writeTimeOut = updateIntEnvVariable(writeTimeOut, "WRITE_TIMEOUT")
 	readTimeOut = updateIntEnvVariable(readTimeOut, "READ_TIMEOUT")
+	feUrl = updateStringEnvVariable(feUrl, "FEURL")
 
 	Config = &Configuration{
 		Prefix:         prefix,
@@ -88,5 +96,6 @@ func init() {
 		WriteTimeOut:   writeTimeOut,
 		ReadTimeOut:    readTimeOut,
 		BootUpWaitTime: bootupWaittime,
+		FEURL:          feUrl,
 	}
 }

@@ -24,10 +24,10 @@ clean:
 	rm -rf build
 
 docker-web-build: web-build
-	docker build -f web.Dockerfile -t $(IMAGE_NAME)-web .
+	docker build -f web.Dockerfile -t $(WEB_IMAGE_NAME) .
 
 docker-cli-build: cli-build
-	docker build -f cli.Dockerfile -t $(IMAGE_NAME)-cli .
+	docker build -f cli.Dockerfile -t $(CLI_IMAGE_NAME) .
 
 docker-web-push:
 	docker push $(WEB_IMAGE_NAME)

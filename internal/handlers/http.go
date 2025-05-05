@@ -43,7 +43,7 @@ func NewHTTPServer(
 
 	h.registerRoutes(ctx)
 
-	return h
+	return corsMiddleware(h)
 }
 
 // registerRoutes register the http routes
