@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/erainogo/html-analyzer/internal/config"
 	"net/http"
+
+	"github.com/erainogo/html-analyzer/internal/config"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
