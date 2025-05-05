@@ -17,12 +17,17 @@ A concurrent web analyzer CLI and API service built in Go — capable of scannin
 ## 🚀 Usage
 
 ### CLI Usage
+We can provide list of urls in a csv file as input and get the required output for a csv file.
+
+Navigate to the folder path that input and output files lives in then run below
 
 ```bash
 cd data && docker run --rm -v "$(pwd)":/data eranga567/html-analyzer:latest-cli /data/input.csv /data/output.csv
 ```
 
 ### 🌐 Web API Usage
+
+This will start the backend web server
 
 ```bash
 docker run -p 8080:8080 eranga567/html-analyzer:latest-web
@@ -85,6 +90,7 @@ View on Docker Hub: [https://hub.docker.com/r/eranga567/html-analyzer/tags](http
 ├── internal/
 │   ├── app/          # Core services
 │   ├── handlers/     # CLI and HTTP handlers
+│   ├── core/         # Adapters
 │   └── config/       # Configuration management
 ├── build/            # Compiled binaries
 ├── mocks/            # Auto-generated mocks
