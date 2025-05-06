@@ -1,6 +1,7 @@
 # 🕵️‍♂️ HTML Analyzer
 
 A concurrent web analyzer CLI and API service built in Go — capable of scanning HTML documents for structural metadata like heading tags, HTML version, internal/external links, and login form detection.
+Listen on port 8080
 
 ## 📦 Features
 
@@ -76,7 +77,6 @@ View on Docker Hub: [https://hub.docker.com/r/eranga567/html-analyzer/tags](http
 
 ## 📁 Project Structure
 
-```
 .
 ├── cmd/
 │   ├── cli/          # CLI entrypoint
@@ -92,4 +92,3 @@ View on Docker Hub: [https://hub.docker.com/r/eranga567/html-analyzer/tags](http
 ├── Makefile
 ├── web.Dockerfile
 ├── cli.Dockerfile
-```
