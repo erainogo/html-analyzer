@@ -71,7 +71,7 @@ func (h *HttpServer) analyzeHandler(ctx context.Context) http.HandlerFunc {
 
 		resp, err := getResponse(body.URL)
 		if err != nil {
-			http.Error(w, "Failed to fetch URL: "+err.Error(), http.StatusBadGateway)
+			http.Error(w, "Failed to fetch URL status code : ", http.StatusBadGateway)
 
 			return
 		}

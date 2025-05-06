@@ -70,12 +70,6 @@ make lint
 make docker-web-build
 make docker-cli-build
 ```
-
-### Push to Docker Hub
-
-```bash
-make docker-web-push
-make docker-cli-push
 ```
 
 View on Docker Hub: [https://hub.docker.com/r/eranga567/html-analyzer/tags](https://hub.docker.com/r/eranga567/html-analyzer/tags)

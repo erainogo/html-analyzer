@@ -12,7 +12,7 @@ The GitLab CI/CD pipeline will:
 4. Deploy to staging
 5. Deploy to production (with manual approval)
 
-## 🚀 Deployment Strategies
+## Deployment Strategies
 
 ### Blue-Green Deployment
 
