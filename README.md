@@ -73,8 +73,6 @@ make docker-cli-build
 ```
 ```
 
-View on Docker Hub: [https://hub.docker.com/r/eranga567/html-analyzer/tags](https://hub.docker.com/r/eranga567/html-analyzer/tags)
-
 ## 📁 Project Structure
 
 .
