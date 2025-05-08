@@ -49,6 +49,11 @@ func main() {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 
+	// set up http client
+	hc := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
 	// background routine to shut down server if signal received
 	// this will wait for the ch chan to receive the exit signals from the os.
 	// if received cancel the context.
@@ -57,6 +62,10 @@ func main() {
 		logger.Infof("Got %s signal. Cancelling", sig)
 
 		cancel()
+
+		if tr, ok := hc.Transport.(*http.Transport); ok {
+			tr.CloseIdleConnections()
+		}
 
 		logger.Info("Server gracefully stopped")
 	}()
@@ -99,7 +108,7 @@ func main() {
 		logger.Fatalf("Failed to write header: %v", err)
 	}
 
-	generateCsv(ctx, logger, &records, writer)
+	generateCsv(ctx, logger, &records, writer, hc)
 
 	logger.Infof("Finished analyzing. Exiting.")
 	logger.Infof("Output File Generated : %s", outputPath)
@@ -110,6 +119,7 @@ func generateCsv(
 	logger *zap.SugaredLogger,
 	records *[][]string,
 	writer *csv.Writer,
+	hc *http.Client,
 ) {
 	select {
 	case <-ctx.Done():
@@ -130,11 +140,6 @@ func generateCsv(
 		}
 
 		rc := *records
-
-		// set up http client
-		hc := &http.Client{
-			Timeout: 30 * time.Second,
-		}
 
 		service := services.NewAnalyzeService(
 			ctx, hc, services.WithLogger(logger))

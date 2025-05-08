@@ -42,6 +42,11 @@ func main() {
 		ReadTimeout:  time.Duration(*config.Config.ReadTimeOut) * time.Second,
 	}
 
+	// set up http client
+	hc := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 
@@ -57,17 +62,16 @@ func main() {
 
 		defer shutdownRelease()
 
+		if tr, ok := hc.Transport.(*http.Transport); ok {
+			tr.CloseIdleConnections()
+		}
+
 		if err := srv.Shutdown(shutdownCtx); err != nil {
 			logger.Errorf("Shutdown error: %s", err)
 		}
 
 		logger.Info("Server gracefully stopped")
 	}()
-
-	// set up http client
-	hc := &http.Client{
-		Timeout: 30 * time.Second,
-	}
 
 	// service will hold the logic to get the required details from parsed url
 	service := services.NewAnalyzeService(
