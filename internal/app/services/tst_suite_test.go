@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"net/http"
 	"testing"
 
 	"github.com/erainogo/html-analyzer/internal/core/adapters"
@@ -18,8 +19,9 @@ type AnalyzeTestSuite struct {
 func (suite *AnalyzeTestSuite) SetupTest() {
 	suite.asserts = assert.New(suite.T())
 	ctx := context.Background()
+	hc := http.Client{}
 
-	suite.service = NewAnalyzeService(ctx)
+	suite.service = NewAnalyzeService(ctx, &hc)
 }
 
 func TestAnalyzeServiceTestSuite(t *testing.T) {

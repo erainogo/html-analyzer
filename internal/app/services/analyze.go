@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"net/http"
 
 	"go.uber.org/zap"
 
@@ -15,6 +16,7 @@ import (
 type AnalyzeService struct {
 	logger *zap.SugaredLogger
 	ctx    context.Context
+	hc     *http.Client
 }
 
 type AnalyzeServiceOption func(*AnalyzeService)
@@ -27,10 +29,12 @@ func WithLogger(logger *zap.SugaredLogger) AnalyzeServiceOption {
 
 func NewAnalyzeService(
 	ctx context.Context,
+	hc *http.Client,
 	opts ...AnalyzeServiceOption,
 ) adapters.AnalyzeService {
 	svc := &AnalyzeService{
 		ctx:    ctx,
+		hc:     hc,
 		logger: zap.NewNop().Sugar(),
 	}
 
@@ -68,7 +72,7 @@ func (u AnalyzeService) Parse(ctx context.Context, htmlBytes *[]byte, url string
 
 		baseHost := getHost(url)
 		// concurrently checking to improve the look-up
-		linkResult := analyzeLinks(ctx, doc, baseHost, u.logger)
+		linkResult := analyzeLinks(ctx, u.hc, doc, baseHost, u.logger)
 
 		// Login form detection
 		// going to use password keyword for the look-up

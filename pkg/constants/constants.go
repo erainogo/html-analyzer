@@ -16,6 +16,11 @@ const (
 	H6 = "h6"
 )
 
+const (
+	UNAUTHORIZEDCODE = 400
+	USERAGENT        = "Mozilla/5.0 (compatible; LinkChecker/1.0)"
+)
+
 var CsvHeader = []string{
 	"URL",
 	"HTML Version",

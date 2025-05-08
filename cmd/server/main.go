@@ -64,9 +64,14 @@ func main() {
 		logger.Info("Server gracefully stopped")
 	}()
 
+	// set up http client
+	hc := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
 	// service will hold the logic to get the required details from parsed url
 	service := services.NewAnalyzeService(
-		ctx, services.WithLogger(logger))
+		ctx, hc, services.WithLogger(logger))
 
 	// http handler for routes like analyze
 	srv.Handler = handlers.NewHTTPServer(

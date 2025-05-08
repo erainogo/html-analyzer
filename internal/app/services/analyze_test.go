@@ -174,9 +174,9 @@ func (suite *AnalyzeTestSuite) TestParseWithHtmlVersionAndTitle() {
 			"h6": 0,
 		},
 		Links: entities.LinkAnalysis{
-			Internal:     0,
-			External:     3,
-			Inaccessible: 3,
+			Internal:     2,
+			External:     1,
+			Inaccessible: 2,
 		},
 		HasLoginForm: false,
 	}
@@ -186,7 +186,7 @@ func (suite *AnalyzeTestSuite) TestParseWithHtmlVersionAndTitle() {
 	htmlContent := "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Test Page</title>\n  </head>\n  <body>\n    <a href=\"https://example.com/internal\">Internal Link</a>\n    <a href=\"https://external.com/external\">External Link</a>\n    <a href=\"https://example.com/broken\">Broken Link</a>\n  </body>\n</html>"
 	htmlBytes := []byte(htmlContent)
 
-	result, _ := suite.service.Parse(ctx, &htmlBytes, "http://localhost/")
+	result, _ := suite.service.Parse(ctx, &htmlBytes, "https://example.com")
 
 	suite.asserts.Equal(&mockResult, result)
 }

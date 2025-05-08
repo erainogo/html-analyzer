@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/csv"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -129,8 +131,13 @@ func generateCsv(
 
 		rc := *records
 
+		// set up http client
+		hc := &http.Client{
+			Timeout: 30 * time.Second,
+		}
+
 		service := services.NewAnalyzeService(
-			ctx, services.WithLogger(logger))
+			ctx, hc, services.WithLogger(logger))
 
 		cliServer := handlers.NewCliServer(
 			ctx, service, handlers.CliWithLogger(logger))

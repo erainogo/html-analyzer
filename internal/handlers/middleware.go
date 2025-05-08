@@ -2,23 +2,23 @@ package handlers
 
 import (
 	"net/http"
-
-	"github.com/erainogo/html-analyzer/internal/config"
 )
 
-func corsMiddleware(next http.Handler) http.Handler {
+// applyCorsMiddleware adds CORS headers to allow cross-origin requests.
+func applyCorsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", *config.Config.FEURL)
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		// set common CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*") // for now allow all.
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
+		// handle preflight requests
 		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusOK)
+			w.WriteHeader(http.StatusNoContent)
 
 			return
 		}
 
-		// Call the next handler
 		next.ServeHTTP(w, r)
 	})
 }

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -43,7 +45,7 @@ func NewHTTPServer(
 
 	h.registerRoutes(ctx)
 
-	return corsMiddleware(h)
+	return applyCorsMiddleware(h)
 }
 
 // registerRoutes register the http routes
@@ -64,35 +66,68 @@ func (h *HttpServer) analyzeHandler(ctx context.Context) http.HandlerFunc {
 		var body entities.RequestBody
 
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			h.logger.Errorw("failed to decode request body", "error", err)
+
+			http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 
 			return
 		}
 
-		resp, err := getResponse(body.URL)
+		if body.URL == "" {
+			h.logger.Warn("empty URL provided")
+
+			http.Error(w, "URL must not be empty", http.StatusBadRequest)
+
+			return
+		}
+
+		parsedURL, err := url.ParseRequestURI(body.URL)
 		if err != nil {
-			http.Error(w, "Failed to fetch URL status code : ", http.StatusBadGateway)
+			h.logger.Errorw("invalid URL", "url", body.URL, "error", err)
+
+			http.Error(w, "Invalid URL format", http.StatusBadRequest)
 
 			return
 		}
 
-		defer func() {
-			if err := resp.Body.Close(); err != nil {
-				h.logger.Errorw("unable to close body", "error", err)
-			}
-		}()
+		// Safe HTTP request with timeout
+		reqCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+		defer cancel()
+
+		req, err := http.NewRequestWithContext(reqCtx, http.MethodGet, parsedURL.String(), nil)
+		if err != nil {
+			h.logger.Errorw("failed to create request", "error", err)
+
+			http.Error(w, "Failed to prepare request", http.StatusInternalServerError)
+
+			return
+		}
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			h.logger.Errorw("failed to fetch URL", "url", parsedURL.String(), "error", err)
+
+			http.Error(w, "Failed to fetch the provided URL", http.StatusBadGateway)
+
+			return
+		}
+		defer resp.Body.Close()
 
 		contentBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			http.Error(w, "Failed to read response body", http.StatusInternalServerError)
+			h.logger.Errorw("failed to read response body", "error", err)
+
+			http.Error(w, "Failed to read response", http.StatusInternalServerError)
 
 			return
 		}
 
-		// Call with both HTML content and URL
+		// call with both HTML content and URL
 		result, err := h.service.Parse(ctx, &contentBytes, body.URL)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadGateway)
+			h.logger.Errorw("parsing failed", "url", body.URL, "error", err)
+
+			http.Error(w, "Failed to analyze content", http.StatusBadGateway)
 
 			return
 		}
@@ -100,7 +135,9 @@ func (h *HttpServer) analyzeHandler(ctx context.Context) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 
 		if err := json.NewEncoder(w).Encode(result); err != nil {
-			http.Error(w, "Failed to encode result", http.StatusInternalServerError)
+			h.logger.Errorw("failed to encode result", "error", err)
+
+			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 
 			return
 		}
@@ -120,5 +157,16 @@ func (h *HttpServer) HealthHandler() http.HandlerFunc {
 }
 
 func (h *HttpServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.serve(w, r)
+}
+
+func (h *HttpServer) serve(w http.ResponseWriter, r *http.Request) {
+	startTime := time.Now()
+
 	h.mux.ServeHTTP(w, r)
+
+	duration := time.Since(startTime)
+
+	h.logger.Infof("Completed request: method=%s, url=%s, duration=%v",
+		r.Method, r.URL.String(), duration)
 }
