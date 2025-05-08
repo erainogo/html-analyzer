@@ -52,6 +52,8 @@ func (u AnalyzeService) Parse(ctx context.Context, htmlBytes *[]byte, url string
 
 		return nil, ctx.Err()
 	default:
+		u.logger.Info("analyzer started for url ", url)
+
 		if htmlBytes == nil || *htmlBytes == nil {
 			return nil, errors.New("html bytes nil")
 		}
@@ -67,13 +69,17 @@ func (u AnalyzeService) Parse(ctx context.Context, htmlBytes *[]byte, url string
 		// retrieve the title.
 		title := doc.Find("title").Text()
 
+		u.logger.Info("analyzing headings for ", url)
 		// find the heading count
 		headings := findHeadings(doc)
+
+		u.logger.Info("analyzing links for ", url)
 
 		baseHost := getHost(url)
 		// concurrently checking to improve the look-up
 		linkResult := analyzeLinks(ctx, u.hc, doc, baseHost, u.logger)
 
+		u.logger.Info("analyzing login forms for ", url)
 		// Login form detection
 		// going to use password keyword for the look-up
 		// usually page yields a small number of forms

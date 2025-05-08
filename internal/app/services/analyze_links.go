@@ -149,7 +149,14 @@ func isLinkAccessible(link string, hc *http.Client) bool {
 		}
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if resp != nil {
+			err := resp.Body.Close()
+			if err != nil {
+				return
+			}
+		}
+	}()
 
 	return true
 }
