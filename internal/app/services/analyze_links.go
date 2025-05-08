@@ -140,7 +140,7 @@ func isLinkAccessible(link string, hc *http.Client) bool {
 	//this is much faster and cheaper
 	resp, err := hc.Do(req)
 
-	// some servers don’t support
+	// some servers don’t support head
 	if err != nil || resp.StatusCode >= constants.UNAUTHORIZEDCODE {
 		req.Method = "GET"
 		// download the whole response using GET
