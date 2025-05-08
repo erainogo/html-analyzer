@@ -34,6 +34,10 @@ This will start the backend web server
 docker run -p 8080:8080 eranga567/html-analyzer:latest-web
 ```
 
+OR
+
+navigate to the cmd/server and run go run main.go and you can just use the make file to build the binary as well
+
 Then send a POST request:
 
 ```bash
