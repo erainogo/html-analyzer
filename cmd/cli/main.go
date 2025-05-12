@@ -32,18 +32,18 @@ type urlResult struct {
 	Err   error
 }
 
-var logger *zap.SugaredLogger
-
-// init ensures logger is ready before anything else runs
-func init() {
+// set up logger
+func setUpLogger() *zap.SugaredLogger {
 	appName := fmt.Sprintf("%s-html-analyzer", *config.Config.Prefix)
 
 	zapLogger, _ := zap.NewProduction()
 
-	logger = zapLogger.With(zap.String("app", appName)).Sugar()
+	return zapLogger.With(zap.String("app", appName)).Sugar()
 }
 
 func main() {
+	logger := setUpLogger()
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	ch := make(chan os.Signal, 1)

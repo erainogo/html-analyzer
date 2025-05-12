@@ -20,7 +20,7 @@ import (
 
 //---------------------------------------- HTTP ENTRYPOINT FOR THE APPLICATION --------------------------------------- //
 
-// init ensures logger is ready before anything else runs
+// set up logger
 func setUpLogger() *zap.SugaredLogger {
 	appName := fmt.Sprintf("%s-html-analyzer", *config.Config.Prefix)
 
