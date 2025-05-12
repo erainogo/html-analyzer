@@ -20,18 +20,18 @@ import (
 
 //---------------------------------------- HTTP ENTRYPOINT FOR THE APPLICATION --------------------------------------- //
 
-var logger *zap.SugaredLogger
-
 // init ensures logger is ready before anything else runs
-func init() {
+func setUpLogger() *zap.SugaredLogger {
 	appName := fmt.Sprintf("%s-html-analyzer", *config.Config.Prefix)
 
 	zapLogger, _ := zap.NewProduction()
 
-	logger = zapLogger.With(zap.String("app", appName)).Sugar()
+	return zapLogger.With(zap.String("app", appName)).Sugar()
 }
 
 func main() {
+	logger := setUpLogger()
+
 	// context for the application
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -69,6 +69,12 @@ func main() {
 		if err := srv.Shutdown(shutdownCtx); err != nil {
 			logger.Errorf("Shutdown error: %s", err)
 		}
+
+		defer func() {
+			if err := logger.Sync(); err != nil && !errors.Is(err, os.ErrInvalid) {
+				logger.Errorf("Failed to sync logger: %v", err)
+			}
+		}()
 
 		logger.Info("Server gracefully stopped")
 	}()
