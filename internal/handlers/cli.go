@@ -79,9 +79,9 @@ func (h *CliServer) Handler(ctx context.Context, url string) (*[]string, error) 
 		fmt.Sprint(result.Headings[constants.H5]),
 		fmt.Sprint(result.Headings[constants.H6]),
 
-		fmt.Sprint(rune(result.Links.Internal)),
-		fmt.Sprint(rune(result.Links.External)),
-		fmt.Sprint(rune(result.Links.Inaccessible)),
+		fmt.Sprint(result.Links.Internal),
+		fmt.Sprint(result.Links.External),
+		fmt.Sprint(result.Links.Inaccessible),
 
 		fmt.Sprint(result.HasLoginForm),
 	}

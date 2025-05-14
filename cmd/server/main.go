@@ -56,7 +56,7 @@ func main() {
 		sig := <-ch
 		logger.Infof("Got %s signal. Cancelling", sig)
 		// shut down background routines
-		cancel()
+		defer cancel()
 
 		shutdownCtx, shutdownRelease := context.WithTimeout(ctx, 1*time.Second)
 
