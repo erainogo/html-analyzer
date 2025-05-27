@@ -54,8 +54,8 @@ func (u AnalyzeService) Parse(ctx context.Context, htmlBytes []byte, url string)
 	default:
 		u.logger.Info("analyzer started for url ", url)
 
-		if htmlBytes == nil {
-			return nil, errors.New("html bytes nil")
+		if len(htmlBytes) == 0 {
+			return nil, errors.New("empty HTML input")
 		}
 		// detect HTML version from raw HTML
 		htmlVersion := detectHTMLVersion(htmlBytes)
