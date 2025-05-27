@@ -179,7 +179,7 @@ func generateCsv(
 
 						results <- urlResult{
 							Index: job.Index,
-							Row:   safeRow(row),
+							Row:   row,
 							Err:   err,
 						}
 					}
@@ -222,11 +222,4 @@ func generateCsv(
 			}
 		}
 	}
-}
-
-func safeRow(row *[]string) []string {
-	if row == nil {
-		return nil
-	}
-	return *row
 }
