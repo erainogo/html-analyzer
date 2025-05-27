@@ -101,7 +101,7 @@ func main() {
 	}
 
 	if len(records) == 0 {
-		logger.Warn("No results found")
+		logger.Warn("No records found")
 
 		return
 	}
