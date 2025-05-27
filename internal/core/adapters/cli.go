@@ -5,5 +5,5 @@ import (
 )
 
 type CliServer interface {
-	Handler(ctx context.Context, url string) (*[]string, error)
+	Handler(ctx context.Context, url string) ([]string, error)
 }

@@ -198,7 +198,7 @@ func (suite *AnalyzeTestSuite) TestParseNilHTMLBytes() {
 
 	suite.Error(err)
 	suite.asserts.Nil(result)
-	suite.asserts.EqualError(err, "html bytes nil")
+	suite.asserts.EqualError(err, "empty HTML input")
 }
 
 func (suite *AnalyzeTestSuite) TestParseContextDone() {

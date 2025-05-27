@@ -41,7 +41,7 @@ func NewCliServer(ctx context.Context,
 	return c
 }
 
-func (h *CliServer) Handler(ctx context.Context, url string) (*[]string, error) {
+func (h *CliServer) Handler(ctx context.Context, url string) ([]string, error) {
 	resp, err := getResponse(url)
 	if err != nil {
 		h.logger.Errorw("Failed to fetch URL: "+err.Error(), http.StatusBadGateway)
@@ -86,5 +86,5 @@ func (h *CliServer) Handler(ctx context.Context, url string) (*[]string, error) 
 		fmt.Sprint(result.HasLoginForm),
 	}
 
-	return &details, nil
+	return details, nil
 }
