@@ -100,6 +100,12 @@ func main() {
 		return
 	}
 
+	if len(records) == 0 {
+		logger.Warn("No results found")
+
+		return
+	}
+
 	outputFile, err := os.Create(outputPath)
 	if err != nil {
 		logger.Fatalf("Failed to create output file: %v", err)
@@ -136,12 +142,6 @@ func generateCsv(
 	default:
 		if records == nil {
 			logger.Error("records are nil")
-
-			return
-		}
-
-		if len(records) == 0 {
-			logger.Warn("No results found")
 
 			return
 		}
