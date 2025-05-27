@@ -97,13 +97,13 @@ func main() {
 	if len(records) > 10000 {
 		fmt.Fprintln(os.Stdout, "too much records to process")
 
-		return
+		os.Exit(1)
 	}
 
 	if len(records) == 0 {
-		logger.Warn("No records found")
+		logger.Warn("No results found")
 
-		return
+		os.Exit(1)
 	}
 
 	outputFile, err := os.Create(outputPath)
