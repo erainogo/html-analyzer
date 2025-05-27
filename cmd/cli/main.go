@@ -140,12 +140,6 @@ func generateCsv(
 
 		return
 	default:
-		if records == nil {
-			logger.Error("records are nil")
-
-			return
-		}
-
 		service := services.NewAnalyzeService(
 			ctx, hc, services.WithLogger(logger))
 
