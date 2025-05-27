@@ -7,8 +7,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func detectHTMLVersion(htmlBytes *[]byte) string {
-	tokenizer := html.NewTokenizer(bytes.NewReader(*htmlBytes))
+func detectHTMLVersion(htmlBytes []byte) string {
+	tokenizer := html.NewTokenizer(bytes.NewReader(htmlBytes))
 
 	for {
 		tt := tokenizer.Next()

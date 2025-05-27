@@ -62,7 +62,7 @@ func (h *CliServer) Handler(ctx context.Context, url string) (*[]string, error) 
 		return nil, err
 	}
 
-	result, err := h.service.Parse(ctx, &contentBytes, url)
+	result, err := h.service.Parse(ctx, contentBytes, url)
 	if err != nil {
 		return nil, err
 	}

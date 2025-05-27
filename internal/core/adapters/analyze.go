@@ -7,5 +7,5 @@ import (
 )
 
 type AnalyzeService interface {
-	Parse(context.Context, *[]byte, string) (*entities.AnalysisResult, error)
+	Parse(context.Context, []byte, string) (*entities.AnalysisResult, error)
 }

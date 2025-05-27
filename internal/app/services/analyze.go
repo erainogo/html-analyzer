@@ -45,7 +45,7 @@ func NewAnalyzeService(
 	return svc
 }
 
-func (u AnalyzeService) Parse(ctx context.Context, htmlBytes *[]byte, url string) (*entities.AnalysisResult, error) {
+func (u AnalyzeService) Parse(ctx context.Context, htmlBytes []byte, url string) (*entities.AnalysisResult, error) {
 	select {
 	case <-ctx.Done():
 		u.logger.Info("application context done", ctx.Err())
@@ -54,14 +54,14 @@ func (u AnalyzeService) Parse(ctx context.Context, htmlBytes *[]byte, url string
 	default:
 		u.logger.Info("analyzer started for url ", url)
 
-		if htmlBytes == nil || *htmlBytes == nil {
+		if htmlBytes == nil {
 			return nil, errors.New("html bytes nil")
 		}
 		// detect HTML version from raw HTML
 		htmlVersion := detectHTMLVersion(htmlBytes)
 
 		// parse document with goquery
-		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(*htmlBytes))
+		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(htmlBytes))
 		if err != nil {
 			return nil, errors.New("failed to parse HTML")
 		}

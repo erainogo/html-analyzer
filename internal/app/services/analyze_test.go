@@ -37,7 +37,7 @@ func TestAnalyzeHTMLVersion(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			htmlBytes := []byte(tt.htmlContent)
-			version := detectHTMLVersion(&htmlBytes)
+			version := detectHTMLVersion(htmlBytes)
 			assert.Equal(t, tt.expected, version)
 		})
 	}
@@ -156,7 +156,7 @@ func (suite *AnalyzeTestSuite) TestParseWithUnknowHtmlVersionAndHeaders() {
 	htmlContent := "<html><body><h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3></body></html>"
 	htmlBytes := []byte(htmlContent)
 
-	result, _ := suite.service.Parse(ctx, &htmlBytes, "http://localhost/")
+	result, _ := suite.service.Parse(ctx, htmlBytes, "http://localhost/")
 
 	suite.asserts.Equal(&mockResult, result)
 }
@@ -186,7 +186,7 @@ func (suite *AnalyzeTestSuite) TestParseWithHtmlVersionAndTitle() {
 	htmlContent := "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Test Page</title>\n  </head>\n  <body>\n    <a href=\"https://example.com/internal\">Internal Link</a>\n    <a href=\"https://external.com/external\">External Link</a>\n    <a href=\"https://example.com/broken\">Broken Link</a>\n  </body>\n</html>"
 	htmlBytes := []byte(htmlContent)
 
-	result, _ := suite.service.Parse(ctx, &htmlBytes, "https://example.com")
+	result, _ := suite.service.Parse(ctx, htmlBytes, "https://example.com")
 
 	suite.asserts.Equal(&mockResult, result)
 }
@@ -207,7 +207,7 @@ func (suite *AnalyzeTestSuite) TestParseContextDone() {
 
 	html := []byte("<html><body><h1>Hello</h1></body></html>")
 
-	result, err := suite.service.Parse(ctx, &html, "http://localhost/")
+	result, err := suite.service.Parse(ctx, html, "http://localhost/")
 
 	suite.Error(err)
 	suite.asserts.Nil(result)

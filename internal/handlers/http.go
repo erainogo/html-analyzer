@@ -123,7 +123,7 @@ func (h *HttpServer) analyzeHandler(ctx context.Context) http.HandlerFunc {
 		}
 
 		// call with both HTML content and URL
-		result, err := h.service.Parse(ctx, &contentBytes, body.URL)
+		result, err := h.service.Parse(ctx, contentBytes, body.URL)
 		if err != nil {
 			h.logger.Errorw("parsing failed", "url", body.URL, "error", err)
 

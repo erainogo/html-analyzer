@@ -93,6 +93,13 @@ func main() {
 		logger.Fatalf("Failed to read input CSV: %v", err)
 	}
 
+	// limit the records to process
+	if len(records) > 10000 {
+		fmt.Fprintln(os.Stdout, "too much records to process")
+
+		return
+	}
+
 	outputFile, err := os.Create(outputPath)
 	if err != nil {
 		logger.Fatalf("Failed to create output file: %v", err)
@@ -108,7 +115,7 @@ func main() {
 		logger.Fatalf("Failed to write header: %v", err)
 	}
 
-	generateCsv(ctx, logger, &records, writer, hc)
+	generateCsv(ctx, logger, records, writer, hc)
 
 	logger.Infof("Finished analyzing. Exiting.")
 	logger.Infof("Output File Generated : %s", outputPath)
@@ -117,7 +124,7 @@ func main() {
 func generateCsv(
 	ctx context.Context,
 	logger *zap.SugaredLogger,
-	records *[][]string,
+	records [][]string,
 	writer *csv.Writer,
 	hc *http.Client,
 ) {
@@ -127,19 +134,17 @@ func generateCsv(
 
 		return
 	default:
-		if records == nil || *records == nil {
+		if records == nil {
 			logger.Error("records are nil")
 
 			return
 		}
 
-		if len(*records) == 0 {
+		if len(records) == 0 {
 			logger.Warn("No results found")
 
 			return
 		}
-
-		rc := *records
 
 		service := services.NewAnalyzeService(
 			ctx, hc, services.WithLogger(logger))
@@ -148,8 +153,8 @@ func generateCsv(
 			ctx, service, handlers.CliWithLogger(logger))
 
 		// make buffered channels for the count of the records.
-		jobs := make(chan urlJob, len(rc))
-		results := make(chan urlResult, len(rc))
+		jobs := make(chan urlJob, len(records))
+		results := make(chan urlResult, len(records))
 
 		var wg sync.WaitGroup
 
@@ -189,15 +194,17 @@ func generateCsv(
 		}
 
 		// Send jobs
-		for i, record := range rc {
-			if len(record) == 0 {
-				continue
+		go func() {
+			defer close(jobs)
+
+			for i, record := range records {
+				if len(record) == 0 {
+					continue
+				}
+
+				jobs <- urlJob{Index: i, URL: record[0]}
 			}
-
-			jobs <- urlJob{Index: i, URL: record[0]}
-		}
-
-		close(jobs)
+		}()
 
 		// wait for collect results
 		go func() {
@@ -208,7 +215,7 @@ func generateCsv(
 		for res := range results {
 			if res.Err != nil {
 				logger.Errorw("Error analyzing URL", "url",
-					rc[res.Index][0], "error", res.Err)
+					records[res.Index][0], "error", res.Err)
 
 				continue
 			}
@@ -216,7 +223,7 @@ func generateCsv(
 			if res.Row != nil {
 				if err := writer.Write(res.Row); err != nil {
 					logger.Errorw("Failed to write CSV row", "url",
-						rc[res.Index][0], "error", err)
+						records[res.Index][0], "error", err)
 				}
 			}
 		}
