@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sort"
 	"sync"
 	"syscall"
 	"time"
@@ -95,7 +96,12 @@ func main() {
 
 	// limit the records to process
 	if len(records) > 10000 {
-		fmt.Fprintln(os.Stdout, "too much records to process")
+		_, err = fmt.Fprintln(os.Stdout, "too much records to process")
+		if err != nil {
+			return
+		}
+
+		logger.Errorf("too much records to process")
 
 		os.Exit(1)
 	}
@@ -206,6 +212,8 @@ func generateCsv(
 			close(results)
 		}()
 
+		var cr []urlResult
+
 		for res := range results {
 			if res.Err != nil {
 				logger.Errorw("Error analyzing URL", "url",
@@ -215,10 +223,18 @@ func generateCsv(
 			}
 
 			if res.Row != nil {
-				if err := writer.Write(res.Row); err != nil {
-					logger.Errorw("Failed to write CSV row", "url",
-						records[res.Index][0], "error", err)
-				}
+				cr = append(cr, res)
+			}
+		}
+
+		sort.Slice(cr, func(i, j int) bool {
+			return cr[i].Index < cr[j].Index
+		})
+
+		for _, res := range cr {
+			err := writer.Write(res.Row)
+			if err != nil {
+				return
 			}
 		}
 	}

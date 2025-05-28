@@ -67,9 +67,9 @@ func analyzeLinks(
 
 					isFullURL := strings.HasPrefix(href, "http")
 
-					accessible := true
+					accessible := false
 					if isFullURL {
-						accessible = isLinkAccessible(href, hc)
+						accessible = isLinkAccessible(ctx, href, hc)
 					}
 
 					// exclude non navigational links early.
@@ -129,8 +129,9 @@ func analyzeLinks(
 	return stats
 }
 
-func isLinkAccessible(link string, hc *http.Client) bool {
-	req, err := http.NewRequest("HEAD", link, nil)
+func isLinkAccessible(ctx context.Context, link string, hc *http.Client) bool {
+	// ctx added to avoid request hanging
+	req, err := http.NewRequestWithContext(ctx, "HEAD", link, nil)
 	if err != nil {
 		return false
 	}
@@ -139,6 +140,15 @@ func isLinkAccessible(link string, hc *http.Client) bool {
 	// asks the server for just the headers, not the entire response body
 	//this is much faster and cheaper
 	resp, err := hc.Do(req)
+
+	defer func() {
+		if resp != nil {
+			err := resp.Body.Close()
+			if err != nil {
+				return
+			}
+		}
+	}()
 
 	// some servers don’t support head
 	if err != nil || resp.StatusCode >= constants.UNAUTHORIZEDCODE {
@@ -149,15 +159,6 @@ func isLinkAccessible(link string, hc *http.Client) bool {
 			return false
 		}
 	}
-
-	defer func() {
-		if resp != nil {
-			err := resp.Body.Close()
-			if err != nil {
-				return
-			}
-		}
-	}()
 
 	return true
 }

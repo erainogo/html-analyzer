@@ -58,7 +58,7 @@ func main() {
 		// shut down background routines
 		defer cancel()
 
-		shutdownCtx, shutdownRelease := context.WithTimeout(ctx, 1*time.Second)
+		shutdownCtx, shutdownRelease := context.WithTimeout(ctx, 5*time.Second)
 
 		defer shutdownRelease()
 

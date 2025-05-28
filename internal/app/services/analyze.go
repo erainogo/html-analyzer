@@ -33,9 +33,8 @@ func NewAnalyzeService(
 	opts ...AnalyzeServiceOption,
 ) adapters.AnalyzeService {
 	svc := &AnalyzeService{
-		ctx:    ctx,
-		hc:     hc,
-		logger: zap.NewNop().Sugar(),
+		ctx: ctx,
+		hc:  hc,
 	}
 
 	for _, opt := range opts {
@@ -45,7 +44,7 @@ func NewAnalyzeService(
 	return svc
 }
 
-func (u AnalyzeService) Parse(ctx context.Context, htmlBytes []byte, url string) (*entities.AnalysisResult, error) {
+func (u *AnalyzeService) Parse(ctx context.Context, htmlBytes []byte, url string) (*entities.AnalysisResult, error) {
 	select {
 	case <-ctx.Done():
 		u.logger.Info("application context done", ctx.Err())
